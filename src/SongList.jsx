@@ -1,23 +1,16 @@
 import Song from "./Song";
+import { useMySpotifySongs } from "./services/spotify/useMySpotifySongs";
 
-const songs = [
-  { id: 1, name: "God's Plan", artist: "Drake" },
-  { id: 2, name: "Money Trees", artist: "Kendrick Lamar" },
-  { id: 3, name: "Something", artist: "The Beatles" },
-  { id: 4, name: "Something", artist: "The Beatles" },
-  { id: 5, name: "Something", artist: "The Beatles" },
-  { id: 6, name: "Something", artist: "The Beatles" },
-  { id: 7, name: "Something", artist: "The Beatles" },
-  { id: 8, name: "Something", artist: "The Beatles" },
-  { id: 9, name: "Something", artist: "The Beatles" },
-];
 const SongList = () => {
+  const { songs } = useMySpotifySongs();
   return (
-    <ul className="mt-14 px-12">
-      {songs.map((song) => (
-        <Song key={song.id} song={song} />
-      ))}
-    </ul>
+    <>
+      <ul className="mt-14 px-12">
+        {songs.map(({ track: song }) => (
+          <Song key={song.id} song={song} />
+        ))}
+      </ul>
+    </>
   );
 };
 export default SongList;

@@ -1,4 +1,8 @@
+import LoginWithSpotify from "./LoginWithSpotifyButton";
+import { useSpotifyToken } from "./services/spotify/useSpotifyToken";
+
 const Navbar = () => {
+  const { isAuthenticated } = useSpotifyToken();
   return (
     <div className="h-16 w-[100%] bg-slate-500 text-white">
       <div className="h-[100%]">
@@ -10,9 +14,13 @@ const Navbar = () => {
             <a href="/about">About</a>
           </li>
           <li>
-            <a href="/login">Login</a>
+            <a href="/search">Search</a>
           </li>
-          <li>About</li>
+          {!isAuthenticated && (
+            <li>
+              <LoginWithSpotify />
+            </li>
+          )}
         </ul>
       </div>
     </div>
