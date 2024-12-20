@@ -35,8 +35,11 @@ export const MySpotifySongsProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    console.log("Refetching songs", accessToken);
     if (accessToken && !songs.length) {
       getMySongs();
+    } else {
+      setSongs([]);
     }
   }, [accessToken]);
   return (

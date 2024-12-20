@@ -1,4 +1,4 @@
-import usePlaybackState from "./services/spotify/useSpotifyPlaybackState";
+import usePlaybackState from "../services/spotify/useSpotifyPlaybackState";
 
 const Playback = () => {
   const { playbackState, isLoading, isError, error } = usePlaybackState();

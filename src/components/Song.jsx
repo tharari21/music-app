@@ -1,4 +1,4 @@
-import PlayButton from "./assets/playbutton.png";
+import PlayButton from "../assets/playbutton.png";
 // props
 const Song = ({ song }) => {
   const { name } = song;

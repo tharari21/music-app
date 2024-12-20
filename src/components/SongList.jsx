@@ -1,5 +1,5 @@
 import Song from "./Song";
-import { useMySpotifySongs } from "./services/spotify/useMySpotifySongs";
+import { useMySpotifySongs } from "../services/spotify/useMySpotifySongs";
 
 const SongList = () => {
   const { songs } = useMySpotifySongs();

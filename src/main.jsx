@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import App from "./App.jsx";
+import App from "./components/App.jsx";
 import "./index.css";
 import { SpotifyTokenProvider } from "./services/spotify/useSpotifyToken.jsx";
 import { MySpotifySongsProvider } from "./services/spotify/useMySpotifySongs.jsx";
