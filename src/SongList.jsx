@@ -11,6 +11,7 @@ const songs = [
   { id: 8, name: "Something", artist: "The Beatles" },
   { id: 9, name: "Something", artist: "The Beatles" },
 ];
+
 const SongList = () => {
   return (
     <ul className="mt-14 px-12">

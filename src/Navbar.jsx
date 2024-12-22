@@ -1,3 +1,5 @@
+import LoginWithSpotify from "./LoginWithSpotify";
+
 const Navbar = () => {
   return (
     <div className="h-16 w-[100%] bg-slate-500 text-white">
@@ -10,7 +12,7 @@ const Navbar = () => {
             <a href="/about">About</a>
           </li>
           <li>
-            <a href="/login">Login</a>
+            <LoginWithSpotify />
           </li>
           <li>About</li>
         </ul>
