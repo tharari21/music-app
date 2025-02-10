@@ -216,3 +216,7 @@ To understand this you need to understand the word "render"
 When React places components onto the browser screen, this is known as "rendering". React "renders" each component you define onto the browser page.
 When the user first loads the website in the browser, react does the "initial render" which is the first render of each component in your app
 When we used the javascript variable for count, what happened was that the value of the count updated but React did not "re-render" the component. If a value changes, react needs to re-render the component so that the value can update on the screen. For React to do this "re-render" it needs to know about your variable and whether it changed. We use useState so that react knows about the value changing. This is why we use the setter function to update the value, because the setter function has built in functionality of re-rendering the component when value changes.
+
+
+## Oauth
+

@@ -1,22 +1,30 @@
+import { useEffect, useState } from "react";
 import Song from "./Song";
 
-const songs = [
-  { id: 1, name: "God's Plan", artist: "Drake" },
-  { id: 2, name: "Money Trees", artist: "Kendrick Lamar" },
-  { id: 3, name: "Something", artist: "The Beatles" },
-  { id: 4, name: "Something", artist: "The Beatles" },
-  { id: 5, name: "Something", artist: "The Beatles" },
-  { id: 6, name: "Something", artist: "The Beatles" },
-  { id: 7, name: "Something", artist: "The Beatles" },
-  { id: 8, name: "Something", artist: "The Beatles" },
-  { id: 9, name: "Something", artist: "The Beatles" },
-];
+const SongList = ({ accessToken }) => {
+  const [songs, setSongs] = useState([]);
+  useEffect(() => {
+    console.log("UseEffect is called!");
+    const getSongs = async () => {
+      const response = await fetch("https://api.spotify.com/v1/me/tracks", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const data = await response.json();
 
-const SongList = () => {
+      console.log("My Spotify songs", data);
+      setSongs(data.items);
+    };
+    if (accessToken) {
+      getSongs();
+    }
+  }, [accessToken]);
+
   return (
     <ul className="mt-14 px-12">
       {songs.map((song) => (
-        <Song key={song.id} song={song} />
+        <Song key={song.track.id} song={song.track} />
       ))}
     </ul>
   );

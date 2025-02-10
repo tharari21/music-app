@@ -3,6 +3,8 @@ import Navbar from "./Navbar";
 import SongList from "./SongList";
 
 function App() {
+  const [accessToken, setAccessToken] = useState(null);
+
   const getToken = async (code) => {
     const tokenUrl = "https://accounts.spotify.com/api/token";
     // stored in the previous step
@@ -27,7 +29,8 @@ function App() {
     const response = await body.json();
     console.log("Spotify API response", response);
 
-    localStorage.setItem("access_token", response.access_token);
+    // localStorage.setItem("access_token", response.access_token);
+    setAccessToken(response.access_token);
   };
 
   useEffect(() => {
@@ -44,7 +47,7 @@ function App() {
   return (
     <>
       <Navbar />
-      <SongList />
+      <SongList accessToken={accessToken} />
     </>
   );
 }
