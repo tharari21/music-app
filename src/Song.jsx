@@ -1,11 +1,15 @@
+import { useNavigate } from "react-router-dom";
 import PlayButton from "./assets/playbutton.png";
 // props
 const Song = ({ song }) => {
-  const { name, artists } = song;
+  const { name, artists, id } = song;
   const artistNames = artists.map((artist) => artist.name).join(", ");
+  const navigate = useNavigate();
 
   return (
-    <li className="h-16 my-2 border border-blue-300 shadow-md">
+    <li onClick={()=>{
+      navigate(`/songs/${id}`)
+    } } className="h-16 my-2 border border-blue-300 shadow-md">
       <div className="w-[100%] flex justify-between">
         <h3 className="pl-3 pt-2 font-bold text-lg">{name}</h3>
         {artistNames}

@@ -6,15 +6,21 @@ const SongList = ({ accessToken }) => {
   useEffect(() => {
     console.log("UseEffect is called!");
     const getSongs = async () => {
-      const response = await fetch("https://api.spotify.com/v1/me/tracks", {
+      try{
+        const response = await fetch("https://api.spotify.com/v1/me/tracks", {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
         },
       });
       const data = await response.json();
-
+      console.log(data);
       console.log("My Spotify songs", data);
       setSongs(data.items);
+    }
+     catch(error){
+      console.log(error);
+     }   
+
     };
     if (accessToken) {
       getSongs();

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import {Route, Routes } from "react-router-dom";
 import Navbar from "./Navbar";
 import SongList from "./SongList";
+import SongPage from "./SongPage";
 
 function App() {
   const [accessToken, setAccessToken] = useState(null);
@@ -28,7 +30,6 @@ function App() {
     const body = await fetch(tokenUrl, payload);
     const response = await body.json();
     console.log("Spotify API response", response);
-
     // localStorage.setItem("access_token", response.access_token);
     setAccessToken(response.access_token);
   };
@@ -46,8 +47,14 @@ function App() {
 
   return (
     <>
+      {/* <Navbar />
+      <SongList accessToken={accessToken} /> */}
       <Navbar />
-      <SongList accessToken={accessToken} />
+      <Routes>
+        <Route path="/" element={<SongList accessToken={accessToken} />} />
+        <Route path="/songs/:songId" element={<SongPage accessToken={accessToken} />} />
+      </Routes>
+
     </>
   );
 }
