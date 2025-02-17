@@ -5,7 +5,7 @@ import SongList from "./SongList";
 import SongPage from "./SongPage";
 
 function App() {
-  const [accessToken, setAccessToken] = useState(null);
+  const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken") || null);
 
   const getToken = async (code) => {
     const tokenUrl = "https://accounts.spotify.com/api/token";
@@ -13,6 +13,7 @@ function App() {
     let codeVerifier = localStorage.getItem("code_verifier");
     const clientId = "d4c2d36a064049bb8f6af9e871f821c0";
     const redirectUri = "http://localhost:5173";
+
     const payload = {
       method: "POST",
       headers: {
@@ -29,9 +30,16 @@ function App() {
 
     const body = await fetch(tokenUrl, payload);
     const response = await body.json();
+
     console.log("Spotify API response", response);
-    // localStorage.setItem("access_token", response.access_token);
-    setAccessToken(response.access_token);
+    if(response.access_token){
+      console.log("Storing access token:", response.access_token);
+      localStorage.setItem("accessToken", response.access_token);
+      setAccessToken(response.access_token);
+    }
+    else {
+      console.error("No access token received:", response);
+    }
   };
 
   useEffect(() => {
@@ -39,22 +47,25 @@ function App() {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
     console.log(code);
-
-    if (code) {
+    //const tokenFromStorage = localStorage.getItem("accessToken");
+    // if(!accessToken && tokenFromStorage){
+    //   setAccessToken(tokenFromStorage);
+    // }
+    // else if(code && !accessToken) {
+    //   getToken(code);
+    // }
+    if(!accessToken && code){
       getToken(code);
     }
-  }, []); // only runs when component first render
+  }, [accessToken]); // only runs when component first render
 
   return (
     <>
-      {/* <Navbar />
-      <SongList accessToken={accessToken} /> */}
       <Navbar />
       <Routes>
         <Route path="/" element={<SongList accessToken={accessToken} />} />
         <Route path="/songs/:songId" element={<SongPage accessToken={accessToken} />} />
       </Routes>
-
     </>
   );
 }

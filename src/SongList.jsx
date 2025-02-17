@@ -3,6 +3,7 @@ import Song from "./Song";
 
 const SongList = ({ accessToken }) => {
   const [songs, setSongs] = useState([]);
+
   useEffect(() => {
     console.log("UseEffect is called!");
     const getSongs = async () => {
@@ -29,7 +30,7 @@ const SongList = ({ accessToken }) => {
 
   return (
     <ul className="mt-14 px-12">
-      {songs.map((song) => (
+      {songs?.map((song) => (
         <Song key={song.track.id} song={song.track} />
       ))}
     </ul>
