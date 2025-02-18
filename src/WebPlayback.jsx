@@ -4,33 +4,27 @@ function WebPlayback({ accessToken, song }) {
   const [is_paused, setPaused] = useState(true);
   const [is_active, setActive] = useState(false);
   const [player, setPlayer] = useState(undefined);
-  const [current_track] = useState(song);
+  const [current_track, setTrack] = useState(song);
 
   useEffect(() => {
-    const transferPlayback = async (deviceId) => {
-      await fetch("https://api.spotify.com/v1/me/player", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          device_ids: [deviceId],
-          play: false, // Automatically start playback
-        }),
-      });
-    };
-    const playSong = async () => {
-      await fetch("https://api.spotify.com/v1/me/player/play", {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          uris: [current_track.uri], // Replace with the track ID from the page
-        }),
-      });
+    if (!accessToken) {
+      console.error("No access token provided");
+      return;
+    }
+    const playSong = async (deviceId) => {
+      await fetch(
+        "https://api.spotify.com/v1/me/player/play?device_id=" + deviceId,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            uris: [current_track.uri], // Replace with the track ID from the page
+          }),
+        }
+      );
     };
 
     console.log(accessToken);
@@ -49,13 +43,14 @@ function WebPlayback({ accessToken, song }) {
         },
         volume: 0.5,
       });
+      console.log("SETTING PLAYER", player);
 
       setPlayer(player);
 
-      player.addListener("ready", ({ device_id }) => {
+      player.addListener("ready", async ({ device_id }) => {
         console.log("Ready with Device ID", device_id);
-        transferPlayback(device_id);
-        playSong();
+        // await transferPlayback(device_id);
+        await playSong(device_id);
         player.getCurrentState().then((state) => {
           console.log(state);
         });
@@ -66,28 +61,33 @@ function WebPlayback({ accessToken, song }) {
         console.log("Device ID has gone offline", device_id);
       });
 
-      //   player.addListener("player_state_changed", (state) => {
-      //     if (!state) {
-      //       return;
-      //     }
-      //     console.log("state", state.track_window.current_track);
+      player.addListener("player_state_changed", (state) => {
+        if (!state) {
+          return;
+        }
+        console.log("state", state.track_window.current_track);
 
-      //     setTrack(song.track_window.current_track);
-      //     setPaused(state.paused);
+        setTrack(state?.track_window?.current_track);
+        setPaused(state.paused);
 
-      //     player.getCurrentState().then((state) => {
-      //       !state ? setActive(false) : setActive(true);
-      //     });
-      //   });
+        player.getCurrentState().then((state) => {
+          !state ? setActive(false) : setActive(true);
+        });
+      });
 
       player.connect();
     };
     return () => {
-      console.log("Cleaning up the player");
-      player.disconnect();
+      console.log("Cleaning up the player", player);
+      player?.pause().then(() => {
+        player?.disconnect();
+        player?.removeListener("ready");
+        player?.removeListener("not_ready");
+        player?.removeListener("player_state_changed");
+      });
       document.body.removeChild(script);
     };
-  }, [accessToken, current_track]);
+  }, [accessToken, current_track?.uri, player?.context?.uri]);
 
   if (!is_active) {
     return (
