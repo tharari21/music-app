@@ -68,11 +68,11 @@ const SongPage = ({ accessToken }) => {
       <h1>{song?.name}</h1>
       <p>Artist: {song?.artists.map((artist) => artist.name).join(", ")}</p>
       <p>Album: {song?.album.name}</p>
-      <img
+      {/* <img
         src={song?.album.images[0]?.url}
         alt={song?.album.name}
         width="300"
-      />
+      /> */}
       <br />
       {/* <button
         onClick={playSong}

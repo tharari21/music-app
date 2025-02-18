@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
 function WebPlayback({ accessToken, song }) {
-  const [is_paused, setPaused] = useState(false);
+  const [is_paused, setPaused] = useState(true);
   const [is_active, setActive] = useState(false);
   const [player, setPlayer] = useState(undefined);
-  const [current_track, setTrack] = useState(song);
+  const [current_track] = useState(song);
 
   useEffect(() => {
     const transferPlayback = async (deviceId) => {
@@ -16,7 +16,19 @@ function WebPlayback({ accessToken, song }) {
         },
         body: JSON.stringify({
           device_ids: [deviceId],
-          play: true, // Automatically start playback
+          play: false, // Automatically start playback
+        }),
+      });
+    };
+    const playSong = async () => {
+      await fetch("https://api.spotify.com/v1/me/player/play", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uris: [current_track.uri], // Replace with the track ID from the page
         }),
       });
     };
@@ -42,7 +54,8 @@ function WebPlayback({ accessToken, song }) {
 
       player.addListener("ready", ({ device_id }) => {
         console.log("Ready with Device ID", device_id);
-        // transferPlayback(device_id);
+        transferPlayback(device_id);
+        playSong();
         player.getCurrentState().then((state) => {
           console.log(state);
         });
@@ -53,23 +66,28 @@ function WebPlayback({ accessToken, song }) {
         console.log("Device ID has gone offline", device_id);
       });
 
-      player.addListener("player_state_changed", (state) => {
-        if (!state) {
-          return;
-        }
-        console.log("state", state.track_window.current_track);
+      //   player.addListener("player_state_changed", (state) => {
+      //     if (!state) {
+      //       return;
+      //     }
+      //     console.log("state", state.track_window.current_track);
 
-        setTrack(song.track_window.current_track);
-        setPaused(state.paused);
+      //     setTrack(song.track_window.current_track);
+      //     setPaused(state.paused);
 
-        player.getCurrentState().then((state) => {
-          !state ? setActive(false) : setActive(true);
-        });
-      });
+      //     player.getCurrentState().then((state) => {
+      //       !state ? setActive(false) : setActive(true);
+      //     });
+      //   });
 
       player.connect();
     };
-  }, [accessToken]);
+    return () => {
+      console.log("Cleaning up the player");
+      player.disconnect();
+      document.body.removeChild(script);
+    };
+  }, [accessToken, current_track]);
 
   if (!is_active) {
     return (
@@ -101,32 +119,33 @@ function WebPlayback({ accessToken, song }) {
                 {current_track.artists[0].name}
               </div>
 
-              <button
+              {/* <button
                 className="btn-spotify"
                 onClick={() => {
                   player.previousTrack();
                 }}
               >
                 &lt;&lt;
-              </button>
+              </button> */}
 
               <button
                 className="btn-spotify"
                 onClick={() => {
+                  setPaused(!is_paused);
                   player.togglePlay();
                 }}
               >
                 {is_paused ? "PLAY" : "PAUSE"}
               </button>
 
-              <button
+              {/* <button
                 className="btn-spotify"
                 onClick={() => {
                   player.nextTrack();
                 }}
               >
                 &gt;&gt;
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
