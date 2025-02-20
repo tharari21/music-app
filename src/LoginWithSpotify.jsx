@@ -28,7 +28,7 @@ const LoginWithSpotify = () => {
     const redirectUri = "http://localhost:5173";
 
     const scope =
-      "streaming user-read-private user-library-read user-read-email";
+      "streaming user-modify-playback-state user-read-private user-library-read user-read-email";
     const authUrl = new URL("https://accounts.spotify.com/authorize");
 
     // generated in the previous step

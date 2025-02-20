@@ -4,7 +4,7 @@ function WebPlayback({ accessToken, song }) {
   const [is_paused, setPaused] = useState(true);
   const [is_active, setActive] = useState(false);
   const [player, setPlayer] = useState(undefined);
-  const [current_track, setTrack] = useState(song);
+  const [current_track] = useState(song);
 
   useEffect(() => {
     if (!accessToken) {
@@ -27,8 +27,6 @@ function WebPlayback({ accessToken, song }) {
       );
     };
 
-    console.log(accessToken);
-    console.log("current track", current_track);
     const script = document.createElement("script");
     script.src = "https://sdk.scdn.co/spotify-player.js";
     script.async = true;
@@ -43,31 +41,27 @@ function WebPlayback({ accessToken, song }) {
         },
         volume: 0.5,
       });
-      console.log("SETTING PLAYER", player);
 
       setPlayer(player);
 
       player.addListener("ready", async ({ device_id }) => {
         console.log("Ready with Device ID", device_id);
-        // await transferPlayback(device_id);
         await playSong(device_id);
-        player.getCurrentState().then((state) => {
-          console.log(state);
-        });
+
         setActive(true);
       });
 
       player.addListener("not_ready", ({ device_id }) => {
         console.log("Device ID has gone offline", device_id);
+        setActive(false);
       });
 
       player.addListener("player_state_changed", (state) => {
         if (!state) {
           return;
         }
-        console.log("state", state.track_window.current_track);
+        console.log("song paused", state.paused);
 
-        setTrack(state?.track_window?.current_track);
         setPaused(state.paused);
 
         player.getCurrentState().then((state) => {
@@ -94,10 +88,7 @@ function WebPlayback({ accessToken, song }) {
       <>
         <div className="container">
           <div className="main-wrapper">
-            <b>
-              {" "}
-              Instance not active. Transfer your playback using your Spotify app{" "}
-            </b>
+            <b> Could not play song. Player is not ready.</b>
           </div>
         </div>
       </>
