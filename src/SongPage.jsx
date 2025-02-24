@@ -8,8 +8,6 @@ const SongPage = ({ accessToken }) => {
   const [song, setSong] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // const [audio, setAudio] = useState(null);
-  // const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     if (!accessToken) {
@@ -41,54 +39,17 @@ const SongPage = ({ accessToken }) => {
     fetchSong();
   }, [songId, accessToken]);
 
-  // const playSong = () => {
-  //   if (!song?.preview_url) {
-  //     alert("This song cannot be played.");
-  //     return;
-  //   }
-
-  //   if (audio) {
-  //     audio.pause();
-  //     setIsPlaying(false);
-  //   }
-
-  //   const newAudio = new Audio(song.preview_url);
-  //   newAudio.play();
-  //   setAudio(newAudio);
-  //   setIsPlaying(true);
-
-  //   newAudio.onended = () => setIsPlaying(false);
-  // };
-
   if (loading) return <p>Loading song details...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div style={{ textAlign: "center", padding: "20px" }}>
-      <h1>{song?.name}</h1>
-      <p>Artist: {song?.artists.map((artist) => artist.name).join(", ")}</p>
-      <p>Album: {song?.album.name}</p>
-      {/* <img
-        src={song?.album.images[0]?.url}
-        alt={song?.album.name}
-        width="300"
-      /> */}
+      <h1 className="text-2xl font-semibold">{song?.name}</h1>
+      <h3 className="text-lg font-medium">
+        {song?.artists.map((artist) => artist.name).join(", ")}
+      </h3>
+      <h5 className="text-md font-medium"> {song?.album.name}</h5>
       <br />
-      {/* <button
-        onClick={playSong}
-        style={{
-          marginTop: "15px",
-          padding: "10px",
-          borderRadius: "50%",
-          border: "none",
-          backgroundColor: "#1DB954",
-          color: "white",
-          fontSize: "20px",
-          cursor: "pointer",
-        }}
-      >
-        {isPlaying ? <FaPause /> : <FaPlay />}
-      </button> */}
       <WebPlayback accessToken={accessToken} song={song} />
     </div>
   );

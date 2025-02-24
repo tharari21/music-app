@@ -7,9 +7,12 @@ const Song = ({ song }) => {
   const navigate = useNavigate();
 
   return (
-    <li onClick={()=>{
-      navigate(`/songs/${id}`)
-    } } className="h-16 my-2 border border-blue-300 shadow-md">
+    <li
+      onClick={() => {
+        navigate(`/songs/${id}`);
+      }}
+      className="rounded-md h-16 my-2 border border-blue-300 shadow-md cursor-pointer hover:scale-105 transition-transform duration-700"
+    >
       <div className="w-[100%] flex justify-between">
         <h3 className="pl-3 pt-2 font-bold text-lg">{name}</h3>
         {artistNames}

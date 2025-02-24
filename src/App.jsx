@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Navbar from "./Navbar";
 import SongList from "./SongList";
 import SongPage from "./SongPage";
+import { SpotifyPlayerProvider } from "./contexts/useSpotifyPlayer";
 
 function App() {
   const [accessToken, setAccessToken] = useState(
@@ -61,7 +62,7 @@ function App() {
   }, [accessToken]); // only runs when component first render
 
   return (
-    <>
+    <SpotifyPlayerProvider accessToken={accessToken}>
       <Navbar />
       <Routes>
         <Route path="/" element={<SongList accessToken={accessToken} />} />
@@ -70,7 +71,7 @@ function App() {
           element={<SongPage accessToken={accessToken} />}
         />
       </Routes>
-    </>
+    </SpotifyPlayerProvider>
   );
 }
 
