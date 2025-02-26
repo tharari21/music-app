@@ -1,15 +1,18 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 // import { FaPlay, FaPause } from "react-icons/fa";
-import WebPlayback from "./WebPlayback";
 
-const SongPage = ({ accessToken }) => {
+const SongPage = ({ accessToken, player, isActive, isPaused, deviceId }) => {
   const { songId } = useParams();
   const [song, setSong] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // const [audio, setAudio] = useState(null);
-  // const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      player?.pause();
+    };
+  }, [player]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -18,6 +21,21 @@ const SongPage = ({ accessToken }) => {
       return;
     }
 
+    const playSong = async (songUri) => {
+      await fetch(
+        "https://api.spotify.com/v1/me/player/play?device_id=" + deviceId,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            uris: [songUri],
+          }),
+        }
+      );
+    };
     const fetchSong = async () => {
       try {
         const response = await fetch(
@@ -31,6 +49,7 @@ const SongPage = ({ accessToken }) => {
         if (!response.ok) throw new Error("Failed to fetch song");
         const data = await response.json();
         setSong(data);
+        playSong(data.uri);
         console.log(data);
       } catch (err) {
         setError(err.message);
@@ -39,26 +58,7 @@ const SongPage = ({ accessToken }) => {
       }
     };
     fetchSong();
-  }, [songId, accessToken]);
-
-  // const playSong = () => {
-  //   if (!song?.preview_url) {
-  //     alert("This song cannot be played.");
-  //     return;
-  //   }
-
-  //   if (audio) {
-  //     audio.pause();
-  //     setIsPlaying(false);
-  //   }
-
-  //   const newAudio = new Audio(song.preview_url);
-  //   newAudio.play();
-  //   setAudio(newAudio);
-  //   setIsPlaying(true);
-
-  //   newAudio.onended = () => setIsPlaying(false);
-  // };
+  }, [songId, accessToken, deviceId]);
 
   if (loading) return <p>Loading song details...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -68,28 +68,21 @@ const SongPage = ({ accessToken }) => {
       <h1>{song?.name}</h1>
       <p>Artist: {song?.artists.map((artist) => artist.name).join(", ")}</p>
       <p>Album: {song?.album.name}</p>
-      {/* <img
+      <img
         src={song?.album.images[0]?.url}
         alt={song?.album.name}
         width="300"
-      /> */}
+      />
       <br />
-      {/* <button
-        onClick={playSong}
-        style={{
-          marginTop: "15px",
-          padding: "10px",
-          borderRadius: "50%",
-          border: "none",
-          backgroundColor: "#1DB954",
-          color: "white",
-          fontSize: "20px",
-          cursor: "pointer",
+
+      <button
+        className="btn-spotify"
+        onClick={() => {
+          player.togglePlay();
         }}
       >
-        {isPlaying ? <FaPause /> : <FaPlay />}
-      </button> */}
-      <WebPlayback accessToken={accessToken} song={song} />
+        {isPaused ? "PLAY" : "PAUSE"}
+      </button>
     </div>
   );
 };
