@@ -1,8 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useAccessToken } from "./contexts/useAccessToken";
 // import { FaPlay, FaPause } from "react-icons/fa";
 
-const SongPage = ({ accessToken, player, isActive, isPaused, deviceId }) => {
+const SongPage = ({ player, isActive, isPaused, deviceId }) => {
+  const { accessToken } = useAccessToken();
+
   const { songId } = useParams();
   const [song, setSong] = useState(null);
   const [loading, setLoading] = useState(true);

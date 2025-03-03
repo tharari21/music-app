@@ -1,6 +1,8 @@
+import { useAccessToken } from "./contexts/useAccessToken";
 import LoginWithSpotify from "./LoginWithSpotify";
 
 const Navbar = () => {
+  const { logout } = useAccessToken();
   return (
     <div className="h-16 w-[100%] bg-slate-500 text-white">
       <div className="h-[100%]">
@@ -15,6 +17,7 @@ const Navbar = () => {
             <LoginWithSpotify />
           </li>
           <li>About</li>
+          <button onClick={() => logout()}>Logout</button>
         </ul>
       </div>
     </div>

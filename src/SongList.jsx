@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
 import Song from "./Song";
+import { useAccessToken } from "./contexts/useAccessToken";
 
-const SongList = ({ accessToken }) => {
+const SongList = () => {
+  const { accessToken } = useAccessToken();
   const [songs, setSongs] = useState([]);
 
   useEffect(() => {
-    console.log("UseEffect is called!");
     const getSongs = async () => {
-      try{
+      try {
+        console.log("ACCESS TOKEN TO GET SONGS", accessToken);
         const response = await fetch("https://api.spotify.com/v1/me/tracks", {
-        headers: {
-        Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      const data = await response.json();
-      console.log(data);
-      console.log("My Spotify songs", data);
-      setSongs(data.items);
-    }
-     catch(error){
-      console.log(error);
-     }   
-
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const data = await response.json();
+        console.log(data);
+        console.log("My Spotify songs", data);
+        setSongs(data.items);
+      } catch (error) {
+        console.log(error);
+      }
     };
     if (accessToken) {
       getSongs();
