@@ -1,10 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAccessToken } from "./contexts/useAccessToken";
+import { useSpotifyPlayer } from "./contexts/useSpotifyPlayer";
 // import { FaPlay, FaPause } from "react-icons/fa";
 
-const SongPage = ({ player, isActive, isPaused, deviceId }) => {
+const SongPage = () => {
   const { accessToken } = useAccessToken();
+  const { player, playSong, isPaused } = useSpotifyPlayer();
 
   const { songId } = useParams();
   const [song, setSong] = useState(null);
@@ -24,21 +26,6 @@ const SongPage = ({ player, isActive, isPaused, deviceId }) => {
       return;
     }
 
-    const playSong = async (songUri) => {
-      await fetch(
-        "https://api.spotify.com/v1/me/player/play?device_id=" + deviceId,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            uris: [songUri],
-          }),
-        }
-      );
-    };
     const fetchSong = async () => {
       try {
         const response = await fetch(
@@ -61,7 +48,7 @@ const SongPage = ({ player, isActive, isPaused, deviceId }) => {
       }
     };
     fetchSong();
-  }, [songId, accessToken, deviceId]);
+  }, [songId, accessToken]);
 
   if (loading) return <p>Loading song details...</p>;
   if (error) return <p>Error: {error}</p>;

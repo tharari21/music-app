@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Song from "./Song";
 import { useAccessToken } from "./contexts/useAccessToken";
+import { SpotifyPlayerContext } from "./contexts/useSpotifyPlayer";
 
 const SongList = () => {
   const { accessToken } = useAccessToken();
   const [songs, setSongs] = useState([]);
+  const playerContext = useContext(SpotifyPlayerContext);
+  console.log("name", playerContext);
 
   useEffect(() => {
     const getSongs = async () => {
@@ -25,6 +28,8 @@ const SongList = () => {
     };
     if (accessToken) {
       getSongs();
+    } else {
+      setSongs([]);
     }
   }, [accessToken]);
 

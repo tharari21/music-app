@@ -8,89 +8,34 @@ import { useAccessToken } from "./contexts/useAccessToken";
 // context - hook from react
 // defining custom hooks - creating our own hooks
 
-function App() {
+const Protected = ({ children }) => {
   const { accessToken } = useAccessToken();
-  console.log("This is the access token from context: ", accessToken);
-  const [isPaused, setPaused] = useState(true);
-  const [isActive, setActive] = useState(false);
-  const [player, setPlayer] = useState();
-  const [deviceId, setDeviceId] = useState();
+  if (!accessToken) {
+    return <div>You need to login</div>;
+  }
 
-  useEffect(() => {
-    if (!accessToken) {
-      console.error("No access token provided");
-      return;
-    }
+  return children;
+};
 
-    const script = document.createElement("script");
-    script.src = "https://sdk.scdn.co/spotify-player.js";
-    script.async = true;
-
-    document.body.appendChild(script);
-
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      const player = new window.Spotify.Player({
-        name: "Web Playback SDK",
-        getOAuthToken: (cb) => {
-          cb(accessToken);
-        },
-        volume: 0.5,
-      });
-
-      setPlayer(player);
-
-      player.addListener("ready", async ({ device_id }) => {
-        console.log("Ready with Device ID", device_id);
-        setDeviceId(device_id);
-        setActive(true);
-      });
-
-      player.addListener("not_ready", ({ device_id }) => {
-        console.log("Device ID has gone offline", device_id);
-        setActive(false);
-      });
-
-      player.addListener("player_state_changed", (state) => {
-        if (!state) {
-          return;
-        }
-        console.log("song paused", state.paused);
-
-        setPaused(state.paused);
-
-        player.getCurrentState().then((state) => {
-          !state ? setActive(false) : setActive(true);
-        });
-      });
-
-      player.connect();
-    };
-    return () => {
-      console.log("Cleaning up the player", player);
-      // player?.pause().then(() => {
-      //   player?.disconnect();
-      //   player?.removeListener("ready");
-      //   player?.removeListener("not_ready");
-      //   player?.removeListener("player_state_changed");
-      // });
-      // document.body.removeChild(script);
-    };
-  }, [accessToken]);
-
+function App() {
   return (
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<SongList />} />
+        <Route
+          path="/"
+          element={
+            <Protected>
+              <SongList />
+            </Protected>
+          }
+        />
         <Route
           path="/songs/:songId"
           element={
-            <SongPage
-              player={player}
-              isActive={isActive}
-              isPaused={isPaused}
-              deviceId={deviceId}
-            />
+            <Protected>
+              <SongPage />
+            </Protected>
           }
         />
       </Routes>
