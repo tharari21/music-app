@@ -7,7 +7,7 @@ import { useAccessToken } from "./contexts/useAccessToken";
 // context - hook from react
 // defining custom hooks - creating our own hooks
 
-const ProtectedRoute = ({ children }) => {
+const Protected = ({ children }) => {
   const { accessToken } = useAccessToken();
   if (!accessToken) {
     return <div>You need to login</div>;
@@ -21,10 +21,22 @@ function App() {
     <>
       <Navbar />
       <Routes>
-        <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<SongList />} />
-          <Route path="/songs/:songId" element={<SongPage />} />
-        </Route>
+        <Route
+          path="/"
+          element={
+            <Protected>
+              <SongList />
+            </Protected>
+          }
+        />
+        <Route
+          path="/songs/:songId"
+          element={
+            <Protected>
+              <SongPage />
+            </Protected>
+          }
+        />
       </Routes>
     </>
   );

@@ -9,7 +9,6 @@ const SongList = () => {
   useEffect(() => {
     const getSongs = async () => {
       try {
-        console.log("ACCESS TOKEN TO GET SONGS", accessToken);
         const response = await fetch("https://api.spotify.com/v1/me/tracks", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -23,6 +22,7 @@ const SongList = () => {
         console.log(error);
       }
     };
+    console.log("Getting song list");
     if (accessToken) {
       getSongs();
     } else {
