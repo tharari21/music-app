@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 // 1. Create a context
 // 2. Provide context to application using the provider (AccessTokenContext.Provider)
-export const AccessTokenContext = createContext();
+const AccessTokenContext = createContext();
 
 export const AccessTokenProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(

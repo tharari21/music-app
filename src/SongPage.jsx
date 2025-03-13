@@ -48,7 +48,7 @@ const SongPage = () => {
       }
     };
     fetchSong();
-  }, [songId, accessToken]);
+  }, [songId, accessToken, playSong]);
 
   if (loading) return <p>Loading song details...</p>;
   if (error) return <p>Error: {error}</p>;

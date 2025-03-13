@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAccessToken } from "./useAccessToken";
 
-export const SpotifyPlayerContext = createContext();
+const SpotifyPlayerContext = createContext();
 
 const SpotifyPlayerProvider = ({ children }) => {
   const { accessToken } = useAccessToken();
